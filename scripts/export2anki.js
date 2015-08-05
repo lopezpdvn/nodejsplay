@@ -16,17 +16,15 @@ var FIELD_SEPARATOR = '|';
 function build_card_lines(item, index, array)
 {
   var word, pronunciation, line;
-  var re = /^(.*)\/(.*)\/.*$/;
+  var re = /^(.*)\/(.*)\/.*\[(.*)\].*$/;
   matches = re.exec(item);
 
   if(matches != null)
   {
     word = matches[1].trim();
     pronunciation = matches[2].trim();
-    if(word != null && pronunciation != null)
-    {
-      line = [word, pronunciation].join('|');
-    }
+    tag = matches[3] != null ? matches[3] : '';
+    line = [word, pronunciation, tag].join('|');
   } else
   {
     line = '';

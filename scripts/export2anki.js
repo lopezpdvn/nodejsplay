@@ -15,11 +15,24 @@ var FIELD_SEPARATOR = '|';
 
 function build_card_lines(item, index, array)
 {
-  var word, pronunciation;
-  //var re = /^(.*)(\/.*\/)/;
-  var re = /^(.*)$/;
+  var word, pronunciation, line;
+  var re = /^(.*)\/(.*)\/.*$/;
   matches = re.exec(item);
-  return matches[0];
+
+  if(matches != null)
+  {
+    word = matches[1].trim();
+    pronunciation = matches[2].trim();
+    if(word != null && pronunciation != null)
+    {
+      line = [word, pronunciation].join('|');
+    }
+  } else
+  {
+    line = '';
+  }
+
+  return line;
 }
 
 var yaml_path = process.argv[2];
@@ -33,7 +46,5 @@ try {
   console.log('Path is not there');
   console.log(e);
 }
-
-// console.log(typeof(doc))
 
 console.log(doc.map(build_card_lines));

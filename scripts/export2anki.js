@@ -11,7 +11,7 @@ require('shelljs/global');
 yaml = require('js-yaml');
 fs   = require('fs');
 
-var FIELD_SEPARATOR = '|';
+var FIELD_SEPARATOR = '\t';
 
 function build_card_lines(item, index, array)
 {
@@ -24,7 +24,7 @@ function build_card_lines(item, index, array)
     word = matches[1].trim();
     pronunciation = matches[2].trim();
     tag = matches[3] != null ? matches[3] : '';
-    line = [word, pronunciation, tag].join('|');
+    line = [word, pronunciation, tag].join(FIELD_SEPARATOR);
   } else
   {
     line = '';
@@ -43,6 +43,16 @@ try {
 } catch (e) {
   console.log('Path is not there');
   console.log(e);
+  process.exit(1);
 }
 
-console.log(doc.map(build_card_lines));
+fstr = doc.map(build_card_lines).join('\n');
+//console.log(lines);
+
+try {
+  fs.writeFileSync(anki_path, fstr);
+  console.log('Success');
+} catch(e) {
+  console.log('Unable to write file ' + anki_path);
+  process.exit(1);
+}

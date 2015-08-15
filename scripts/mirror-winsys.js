@@ -9,27 +9,28 @@ var child_process = require('child_process');
 var spawn = child_process.spawnSync;
 var PATH_SEPARATOR = ';';
 
-srcPathsEnvKey = "SYSPOL_EXTERNAL_MIRROR_BACKUP_SOURCE_PATH";
-dstPathsEnvKey = "SYSPOL_EXTERNAL_MIRROR_BACKUP_DESTINATION_PATH";
+var srcPathsEnvKey = "SYSPOL_EXTERNAL_MIRROR_BACKUP_SOURCE_PATH";
+var dstPathsEnvKey = "SYSPOL_EXTERNAL_MIRROR_BACKUP_DESTINATION_PATH";
 
-srcPaths = process.env[srcPathsEnvKey];
-if(typeof(srcPaths) == "undefined") {
-  throw Error("Environment variable %" + srcPathsEnvKey + "% is empty/absent");
-}
-srcPaths = srcPaths.split(PATH_SEPARATOR);
+var inData = [srcPathsEnvKey, dstPathsEnvKey];
 
-dstPaths = process.env[dstPathsEnvKey];
-if(typeof(dstPaths) == "undefined") {
-  //throw Error("Environment variable %" + dstPathsEnvKey + "% is empty/absent");
-}
-
-srcPaths = srcPaths.map(function(item, index, array) {
-  return item.replace(/"/g, '');
+// Unfold paths
+var paths = inData.map(function(item, index, array) {
+  paths = process.env[item];
+  if(typeof(paths) == "undefined") {
+    throw Error("Environment variable %" + item + "% is empty/absent");
+  }
+  return paths.split(PATH_SEPARATOR);
 });
-console.log(srcPaths);
 
+// Strip double quotes
+paths = paths.map(function(item, index, array) {
+  return item.map(function(item, index, array) {
+    return item.replace(/"/g, '');
+  });
+});
 
-//console.log(process.env.PATH.split(PATH_SEPARATOR));
+console.log(paths);
 
 // var rsync = exec('rsync -v');
 // console.log(rsync.output);

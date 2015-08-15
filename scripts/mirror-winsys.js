@@ -4,10 +4,11 @@
  *
  * - Depends on robocopy
  * - Doesn't support paths that contain the character ';'
+ * - Syspol compliant
 */
 
 require('shelljs/global');
-var fs   = require('fs');
+var fs = require('fs');
 var child_process = require('child_process');
 var path = require('path');
 
@@ -15,15 +16,18 @@ var inData = ["SYSPOL_EXTERNAL_MIRROR_BACKUP_SOURCE_PATH",
   "SYSPOL_EXTERNAL_MIRROR_BACKUP_DESTINATION_PATH"];
 
 function mirror(src, dst) {
+  // Build whole dst path
+  dstSubdirArr = src.split(path.sep);
+  dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
+  dstSubdirArr = [dstSubdirRoot].concat(dstSubdirArr.slice(1));
+  dst = path.join(dst, dstSubdirArr.join(path.sep));
+
   // Since robocopy doesn't like trailing backslashes, remove them.
   // Also enclose in double quotes.
   args = [src, dst].map(function(item, index, array) {
     return ['"', item.replace(/\\$/, ''), '"'].join('');
   });
 
-  // set src=C:\Users\user0\Pictures
-  // set dst=H:\the\root\of\the\backup\drives\C\Users\user0\Pictures
-  // robocopy %src% %dst% /E
   var robocopy = exec("robocopy " + args[0] + " " + args[1] + " /E /L");
 }
 

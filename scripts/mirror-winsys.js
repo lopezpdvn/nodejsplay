@@ -1,19 +1,31 @@
 #! /usr/bin/env shjs
 
-// Mirrors directories/files on Windows system.
-// Doesn't support paths that contain the character ';'
+/* Mirrors directories/files on Windows system.
+ *
+ * - Depends on robocopy
+ * - Doesn't support paths that contain the character ';'
+*/
 
 require('shelljs/global');
-//yaml = require('js-yaml');
 var fs   = require('fs');
 var child_process = require('child_process');
 var path = require('path');
-var spawn = child_process.spawnSync;
 
-var srcPathsEnvKey = "SYSPOL_EXTERNAL_MIRROR_BACKUP_SOURCE_PATH";
-var dstPathsEnvKey = "SYSPOL_EXTERNAL_MIRROR_BACKUP_DESTINATION_PATH";
+var inData = ["SYSPOL_EXTERNAL_MIRROR_BACKUP_SOURCE_PATH",
+  "SYSPOL_EXTERNAL_MIRROR_BACKUP_DESTINATION_PATH"];
 
-var inData = [srcPathsEnvKey, dstPathsEnvKey];
+function mirror(src, dst) {
+  // Since robocopy doesn't like trailing backslashes, remove them.
+  // Also enclose in double quotes.
+  args = [src, dst].map(function(item, index, array) {
+    return ['"', item.replace(/\\$/, ''), '"'].join('');
+  });
+
+  // set src=C:\Users\user0\Pictures
+  // set dst=H:\the\root\of\the\backup\drives\C\Users\user0\Pictures
+  // robocopy %src% %dst% /E
+  var robocopy = exec("robocopy " + args[0] + " " + args[1] + " /E /L");
+}
 
 // Unfold paths
 var paths = inData.map(function(item, index, array) {
@@ -31,11 +43,18 @@ paths = paths.map(function(item, index, array) {
   });
 });
 
-console.log(paths);
+// If any path is not absolute, fail (syspol).
+paths.forEach(function(item, index, array) {
+  item.forEach(function(item, index, array) {
+    if(!path.isAbsolute(item)) {
+      throw Error("Path `" + item + "` is not absolute");
+    }
+  });
+});
 
-// var rsync = exec('rsync -v');
-// console.log(rsync.output);
-
-// set src=C:\Users\user0\Pictures
-// set dst=H:\the\root\of\the\backup\drives\C\Users\user0\Pictures
-// robocopy %src% %dst% /E
+// Mirror
+paths[1].forEach(function(dst, dstIndex, dstArray) {
+  paths[0].forEach(function(src, srcIndex, srcArray) {
+    mirror(src, dst);
+  });
+});

@@ -24,7 +24,7 @@ function mirror(src, dst) {
 
   // Since robocopy doesn't like trailing backslashes, remove them.
   // Also enclose in double quotes.
-  args = [src, dst].map(function(item, index, array) {
+  args = [src, dst].map(function(item) {
     return ['"', item.replace(/\\$/, ''), '"'].join('');
   });
 
@@ -32,7 +32,7 @@ function mirror(src, dst) {
 }
 
 // Unfold paths
-var paths = inData.map(function(item, index, array) {
+var paths = inData.map(function(item) {
   paths = process.env[item];
   if(typeof(paths) == "undefined") {
     throw Error("Environment variable %" + item + "% is empty/absent");
@@ -41,15 +41,15 @@ var paths = inData.map(function(item, index, array) {
 });
 
 // Strip double quotes
-paths = paths.map(function(item, index, array) {
-  return item.map(function(item, index, array) {
+paths = paths.map(function(item) {
+  return item.map(function(item) {
     return item.replace(/"/g, '');
   });
 });
 
 // If any path is not absolute, fail (syspol).
-paths.forEach(function(item, index, array) {
-  item.forEach(function(item, index, array) {
+paths.forEach(function(item) {
+  item.forEach(function(item) {
     if(!path.isAbsolute(item)) {
       throw Error("Path `" + item + "` is not absolute");
     }
@@ -57,8 +57,8 @@ paths.forEach(function(item, index, array) {
 });
 
 // Mirror
-paths[1].forEach(function(dst, dstIndex, dstArray) {
-  paths[0].forEach(function(src, srcIndex, srcArray) {
+paths[1].forEach(function(dst) {
+  paths[0].forEach(function(src) {
     mirror(src, dst);
   });
 });

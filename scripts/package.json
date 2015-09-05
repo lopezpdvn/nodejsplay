@@ -4,7 +4,10 @@
   "description": "scripts",
   "main": "app.js",
   "author": {
-    "name": "dreilopz0",
-    "email": ""
+    "name": "Pedro Ivan Lopez",
+    "email": "m@pedroivanlopez.com"
+  },
+  "dependencies": {
+    "shelljs": "^0.5.3"
   }
 }

@@ -5,6 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>scripts</Name>
     <RootNamespace>scripts</RootNamespace>
+    <ScriptArguments>-c "dfdf"</ScriptArguments>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -12,7 +13,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>52143a33-2f8d-4f5c-9bf7-98ca537f2642</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>scripts\mirror-winsys.js</StartupFile>
+    <StartupFile>scripts\cli-basic.js</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -31,8 +32,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="scripts\cli-basic.js" />
+    <Compile Include="scripts\export2anki.js" />
+    <Compile Include="scripts\function-expressions.js" />
+    <Compile Include="scripts\mirror-winsys.js" />
+    <Compile Include="scripts\synergys-restart.js" />
+    <Compile Include="scripts\test-yaml.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="scripts\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

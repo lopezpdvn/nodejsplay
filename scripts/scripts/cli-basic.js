@@ -28,7 +28,13 @@ if (typeof program.configdir === "undefined") {
 }
 // If any path is not absolute, fail (syspol).
 program.configdir.forEach(function (fpath) {
-    fs.accessSync(fpath, fs.R_OK | fs.W_OK);
+    //fs.accessSync(fpath, fs.R_OK | fs.W_OK);
+    fs.accessSync(fpath, fs.R_OK);
+    
+    // test write permissions
+    var fname = fpath + '/dummy_file_name';
+    fs.appendFileSync(fname, program.logd);
+    fs.unlinkSync(fname);
 });
 
 console.log(' list: %j', program.configdir);
@@ -36,6 +42,7 @@ console.log(' list: %j', program.configdir);
 //console.log(' collect: %j', program.collect);
 //console.log(' verbosity: %j', program.verbose);
 //console.log(' args: %j', program.args);
+
 
 
 console.log(program.logd);

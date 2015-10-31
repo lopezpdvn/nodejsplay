@@ -34,7 +34,6 @@
     <Compile Include="app.js" />
     <Compile Include="scripts\cli-basic.js" />
     <Compile Include="scripts\export2anki.js" />
-    <Compile Include="scripts\function-expressions.js" />
     <Compile Include="scripts\mirror-winsys.js" />
     <Compile Include="scripts\synergys-restart.js" />
     <Compile Include="scripts\test-yaml.js" />

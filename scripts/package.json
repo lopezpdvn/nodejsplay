@@ -10,5 +10,9 @@
   "dependencies": {
     "shelljs": "^0.5.3",
     "commander": "^2.9.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^1.12.0"
   }
 }

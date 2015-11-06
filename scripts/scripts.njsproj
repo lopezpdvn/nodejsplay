@@ -5,7 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>scripts</Name>
     <RootNamespace>scripts</RootNamespace>
-    <ScriptArguments>-c "dfdf"</ScriptArguments>
+    <ScriptArguments>-c "..\tmp\configdir"</ScriptArguments>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="gulpfile.js" />
     <Compile Include="scripts\cli-basic.js" />
     <Compile Include="scripts\export2anki.js" />
     <Compile Include="scripts\mirror-winsys.js" />

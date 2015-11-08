@@ -11,7 +11,7 @@ var fs = require('fs');
 var path = require('path');
 var program = require('commander');
 
-// Configuration
+// Configuration ==============================================================
 function checkDir(dirPath) {
     //fs.accessSync(fpath, fs.R_OK | fs.W_OK);
     fs.accessSync(dirPath, fs.R_OK);
@@ -82,12 +82,11 @@ program.log = function (msg) {
         msg.toEnd(logDir + "/" + program.logName);
     });
 };
+// End configuration ==========================================================
 
-program.log("mirror-winsys on!");
-throw new Error("END OF PROGRAM");
+program.log("========= Start of " + program.programName);
 
-//var inData = ["SYSPOL_EXTERNAL_MIRROR_BACKUP_SOURCE_PATH",
-//  "SYSPOL_EXTERNAL_MIRROR_BACKUP_DESTINATION_PATH"];
+var paths = [program.sourceDirs, program.destinationDirs];
 
 //function mirror(src, dst) {
 //  // Build whole dst path
@@ -105,30 +104,29 @@ throw new Error("END OF PROGRAM");
 //  var robocopy = exec("robocopy " + args[0] + " " + args[1] + " /E /L");
 //}
 
-//// Unfold paths
-//var paths = inData.map(function(item) {
-//  paths = process.env[item];
-//  if(typeof(paths) == "undefined") {
-//    throw Error("Environment variable %" + item + "% is empty/absent");
-//  }
-//  return paths.split(new RegExp(path.delimiter, "g"));
-//});
+// Strip double quotes
+paths = paths.map(function(item) {
+  return item.map(function(item) {
+    return item.replace(/"/g, '');
+  });
+});
 
-//// Strip double quotes
-//paths = paths.map(function(item) {
-//  return item.map(function(item) {
-//    return item.replace(/"/g, '');
-//  });
-//});
+// Check dirs
+paths.forEach(function (pathArr) {
+    pathArr.forEach(function (item) {
+        try {
+            checkDir(item);
+        }
+        catch (e) {
+            msg = "I/O error with path: `" + item + "`";
+            program.log(msg);
+            throw new Error(msg);
+        }
+    });
+});
 
-//// If any path is not absolute, fail (syspol).
-//paths.forEach(function(item) {
-//  item.forEach(function(item) {
-//    if(!path.isAbsolute(item)) {
-//      throw Error("Path `" + item + "` is not absolute");
-//    }
-//  });
-//});
+program.log("Source dirs: " + program.sourceDirs);
+program.log("Destination dirs: " + program.destinationDirs);
 
 //// Mirror
 //paths[1].forEach(function(dst) {
@@ -136,3 +134,6 @@ throw new Error("END OF PROGRAM");
 //    mirror(src, dst);
 //  });
 //});
+
+program.log("========= End of " + program.programName);
+throw new Error("END OF PROGRAM");

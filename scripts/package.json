@@ -2,7 +2,7 @@
   "name": "scripts",
   "version": "0.0.0",
   "description": "scripts",
-  "main": "scripts/clibasic.js",
+  "main": "scripts/cli-basic.js",
   "author": {
     "name": "Pedro Ivan Lopez",
     "email": "m@pedroivanlopez.com"

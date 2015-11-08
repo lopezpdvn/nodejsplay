@@ -1,4 +1,4 @@
-﻿/// <binding BeforeBuild='default' />
+﻿/// <binding />
 var gulp = require('gulp');
 var sh = require('shelljs');
 //var jshint = require('gulp-jshint');

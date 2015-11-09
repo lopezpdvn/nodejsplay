@@ -10,6 +10,7 @@ var sh = require('shelljs/global');
 var fs = require('fs');
 var path = require('path');
 var program = require('commander');
+var util = require('util');
 
 // Configuration ==============================================================
 function checkDir(dirPath) {
@@ -78,15 +79,39 @@ program.logDir = program.configDirs.map(function (configDir) {
     return logDirPath;
 })
 
+
 program.log = function (msg) {
-    msg = "[" + (new Date()).toISOString() + "] " + msg + "\n";
+    msg = "[" + (new Date()).toLocaleString('en-US') + "] " + msg + "\n";
     this.logDir.forEach(function (logDir) {
         msg.toEnd(logDir + "/" + program.logName);
     });
 };
-// End configuration ==========================================================
 
+// Start and end of program.
 program.log("========= Start of " + program.programName);
+process.on('exit', function (code) {
+    program.log("========= End of " + program.programName);
+});
+
+// Lock
+program.configDirs.forEach(function (configDir) {
+    var lockFilePath = path.join(configDir, "var/lock/LCK.." + program.programName);
+    
+    // Validate lock.
+    try {
+        fs.accessSync(lockFilePath, fs.F_OK);
+        var msg = util.format("Lock file exists: `%s`", lockFilePath);
+        console.error(msg);
+        program.log(msg);
+        process.exit(1);
+    }
+    catch (e) {
+        msg = util.format("Lock file doesn't exist.")
+        console.log(msg);
+        program.log(msg);
+    }
+});
+// End configuration ==========================================================
 
 var paths = [program.sourceDirs, program.destinationDirs];
 
@@ -141,5 +166,3 @@ paths[1].forEach(function(dst) {
     mirror(src, dst);
   });
 });
-
-program.log("========= End of " + program.programName);

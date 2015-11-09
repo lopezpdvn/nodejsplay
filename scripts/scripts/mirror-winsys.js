@@ -55,6 +55,8 @@ program
   .option("-d, --destination-dirs <items>",
       'List of destination directories separated by ' + path.delimiter,
       function (val) { return val.split(new RegExp(path.delimiter, "g")) })
+      .option("-n, --dry-run",
+          "list only - don't copy, timestamp or delete anything")
   .parse(process.argv);
 
 if (typeof program.configDirs === "undefined" ||
@@ -88,21 +90,26 @@ program.log("========= Start of " + program.programName);
 
 var paths = [program.sourceDirs, program.destinationDirs];
 
-//function mirror(src, dst) {
-//  // Build whole dst path
-//  dstSubdirArr = src.split(path.sep);
-//  dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
-//  dstSubdirArr = [dstSubdirRoot].concat(dstSubdirArr.slice(1));
-//  dst = path.join(dst, dstSubdirArr.join(path.sep));
+function mirror(src, dst) {
+    // Build whole dst path
+    dstSubdirArr = src.split(path.sep);
+    dstSubdirRoot = dstSubdirArr[0].replace(/:$/, '');
+    dstSubdirArr = [dstSubdirRoot].concat(dstSubdirArr.slice(1));
+    dst = path.join(dst, dstSubdirArr.join(path.sep));
+    
+    // Since robocopy doesn't like trailing backslashes, remove them.
+    // Also enclose in double quotes.
+    args = [src, dst].map(function(item) {
+      return ['"', item.replace(/\\$/, ''), '"'].join('');
+    });
 
-//  // Since robocopy doesn't like trailing backslashes, remove them.
-//  // Also enclose in double quotes.
-//  args = [src, dst].map(function(item) {
-//    return ['"', item.replace(/\\$/, ''), '"'].join('');
-//  });
-
-//  var robocopy = exec("robocopy " + args[0] + " " + args[1] + " /E /L");
-//}
+    var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
+    if (program.dryRun) {
+        commandStr += " /L";
+    }
+    program.log("Executing command: " + commandStr);
+    var robocopy = exec(commandStr);
+}
 
 // Strip double quotes
 paths = paths.map(function(item) {
@@ -128,12 +135,11 @@ paths.forEach(function (pathArr) {
 program.log("Source dirs: " + program.sourceDirs);
 program.log("Destination dirs: " + program.destinationDirs);
 
-//// Mirror
-//paths[1].forEach(function(dst) {
-//  paths[0].forEach(function(src) {
-//    mirror(src, dst);
-//  });
-//});
+// Mirror
+paths[1].forEach(function(dst) {
+  paths[0].forEach(function(src) {
+    mirror(src, dst);
+  });
+});
 
 program.log("========= End of " + program.programName);
-throw new Error("END OF PROGRAM");

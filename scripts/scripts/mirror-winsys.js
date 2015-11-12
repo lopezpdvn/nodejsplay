@@ -30,9 +30,8 @@ program.programName = "mirrorwinsys";
     var month = (dateObj.getMonth() + 1).toString();
     var day = dateObj.getDate().toString();
     
-    datetimeElements = [[year, 4 - year.length], [month, 2 - month.length], 
-        [day, 2 - day.length]].map(function (item) {
-        for (var i = 0, rt = item[0]; i < item[1]; i++) {
+    datetimeElements = [[year, 4], [month, 2], [day, 2]].map(function (item) {
+        for (var i = 0, rt = item[0]; i < item[1] - item[0].length; i++) {
             rt = "0" + rt;
         }
         return rt;
@@ -58,6 +57,8 @@ program
       function (val) { return val.split(new RegExp(path.delimiter, "g")) })
       .option("-n, --dry-run",
           "list only - don't copy, timestamp or delete anything")
+      .option("-m, --mirror",
+          "Delete dest files/folders that no longer exist in source")
   .parse(process.argv);
 
 if (typeof program.configDirs === "undefined" ||
@@ -77,8 +78,7 @@ program.logDir = program.configDirs.map(function (configDir) {
         checkDir(logDirPath);
     }
     return logDirPath;
-})
-
+});
 
 program.log = function (msg) {
     msg = "[" + (new Date()).toLocaleString('en-US') + "] " + msg + "\n";
@@ -90,6 +90,14 @@ program.log = function (msg) {
 // Start and end of program.
 program.log("========= Start of " + program.programName);
 process.on('exit', function (code) {
+    if (!code) {
+        program.configDirs.forEach(function (configDir) {
+            var lockFilePath = path.join(configDir, "var/lock/LCK.." +
+                program.programName);
+            var msg = util.format("Removing lock file `%s`", lockFilePath);
+            rm('-rf', lockFilePath);
+        });
+    }
     program.log("========= End of " + program.programName);
 });
 
@@ -106,7 +114,9 @@ program.configDirs.forEach(function (configDir) {
         process.exit(1);
     }
     catch (e) {
-        msg = util.format("Lock file doesn't exist.")
+        var msg = util.format("Lock file doesn't exist, creating lock file `%s`",
+            lockFilePath);
+        process.pid.toString().toEnd(lockFilePath);
         console.log(msg);
         program.log(msg);
     }
@@ -128,12 +138,20 @@ function mirror(src, dst) {
       return ['"', item.replace(/\\$/, ''), '"'].join('');
     });
 
-    var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
+    //var commandStr = "robocopy " + args[0] + " " + args[1] + " /E";
+    var commandStr = util.format("robocopy %s %s /E",
+        args[0], args[1]);
     if (program.dryRun) {
         commandStr += " /L";
     }
+    if (program.mirror) {
+        commandStr += " /PURGE";
+    }
     program.log("Executing command: " + commandStr);
-    var robocopy = exec(commandStr);
+    exec(commandStr, { silent: false }, function (code, output) {
+        program.log('Robocopy exit code: ' + code);
+        program.log('Robocopy output:\n' + output);
+    });
 }
 
 // Strip double quotes

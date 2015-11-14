@@ -2,7 +2,7 @@
   "name": "scripts",
   "version": "0.0.0",
   "description": "scripts",
-  "main": "scripts/cli-basic.js",
+  "main": "scripts/mirror-winsys.js",
   "author": {
     "name": "Pedro Ivan Lopez",
     "email": "m@pedroivanlopez.com"

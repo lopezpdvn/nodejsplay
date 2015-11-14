@@ -13,7 +13,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>52143a33-2f8d-4f5c-9bf7-98ca537f2642</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>scripts\cli-basic.js</StartupFile>
+    <StartupFile>scripts\mirror-winsys.js</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>

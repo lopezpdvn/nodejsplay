@@ -74,7 +74,7 @@ program.logDir = program.configDirs.map(function (configDir) {
     try {
         checkDir(logDirPath);
     } catch (e) {
-        sh.mkdir("-p", logDirPath);
+        mkdir("-p", logDirPath);
         checkDir(logDirPath);
     }
     return logDirPath;
@@ -116,6 +116,7 @@ program.configDirs.forEach(function (configDir) {
     catch (e) {
         var msg = util.format("Lock file doesn't exist, creating lock file `%s`",
             lockFilePath);
+        mkdir("-p", path.dirname(lockFilePath));
         process.pid.toString().toEnd(lockFilePath);
         console.log(msg);
         program.log(msg);

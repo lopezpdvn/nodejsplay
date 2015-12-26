@@ -12,6 +12,13 @@ var path = require('path');
 var program = require('commander');
 var util = require('util');
 
+// All file-based modules are relative to root of package
+var rootPkgPrefix = "..";
+var packageJSON = require(path.join(rootPkgPrefix, 'package'));
+var syspol = require(path.join(rootPkgPrefix,
+    packageJSON.dependencies["syspol-js"]
+    .replace(/^file:/, "")));
+
 // Configuration ==============================================================
 function checkDir(dirPath) {
     //fs.accessSync(fpath, fs.R_OK | fs.W_OK);

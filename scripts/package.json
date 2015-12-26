@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "shelljs": "^0.5.3",
-    "commander": "^2.9.0"
+    "commander": "^2.9.0",
+    "syspol-js": "file:../../syspol-js/src/syspol-js"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

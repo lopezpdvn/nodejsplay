@@ -8,12 +8,11 @@
     "email": "m@pedroivanlopez.com"
   },
   "dependencies": {
-    "shelljs": "^0.5.3",
-    "commander": "^2.9.0",
-    "syspol-js": "file:../../syspol-js/src/syspol-js"
+    "shelljs": "latest",
+    "commander": "^2.9.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-jshint": "^1.12.0"
+    "gulp": "^4.0.2",
+    "gulp-jshint": "^2.1.0"
   }
 }

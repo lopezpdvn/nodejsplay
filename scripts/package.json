@@ -8,8 +8,8 @@
     "email": "m@pedroivanlopez.com"
   },
   "dependencies": {
-    "shelljs": "latest",
-    "commander": "^2.9.0"
+    "commander": "^2.20.3",
+    "shelljs": "latest"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
